@@ -44,10 +44,10 @@ impl GameState for Control {
         if self.isGameOver {
             context.print_centered(GAME_HEIGHT / 2 - 1, "GAME OVER");
             context.print_centered(GAME_HEIGHT / 2 + 1, "QUIT: Q, START: SPACE");
-            match ctx.key {
+            match context.key {
                 Some(VirtualKeyCode::Space) => {
                     self.reset();
-                    ctx.cls();
+                    context.cls();
                 }
                 Some(VirtualKeyCode::Q) => context.quit(),
                 _ => {}
@@ -68,7 +68,7 @@ impl GameState for Control {
 
         context.print(self.targetPosition.x, self.targetPosition.y, "*");
 
-        self.handleDrawTarget(ctx);
+        self.handleDrawTarget(context);
 
         if self.targetPosition == self.userPosition.first().unwrap().position {
             self.targetPosition = Position::random();
@@ -108,9 +108,9 @@ impl Control {
         }
     }
 
-    fn handleDrawTarget(&mut self, ctx: &mut BTerm) {
+    fn handleDrawTarget(&mut self, context: &mut BTerm) {
         for UserState { position, direction } in &mut self.userPosition {
-            ctx.print(position.x, position.y, format!(" "));
+            context.print(position.x, position.y, format!(" "));
             match direction {
                 Some(VirtualKeyCode::Up) => position.y = position.y.saturating_sub(1),
                 Some(VirtualKeyCode::Down) => position.y = min(position.y + 1, GAME_HEIGHT - 1),
@@ -118,7 +118,7 @@ impl Control {
                 Some(VirtualKeyCode::Right) => position.x = min(position.x + 1, GAME_WIDTH - 1),
                 _ => {}
             }
-            ctx.print(position.x, position.y, "#");
+            context.print(position.x, position.y, "#");
         }
 
         let startPosition = self.userPosition.first().unwrap().position;
